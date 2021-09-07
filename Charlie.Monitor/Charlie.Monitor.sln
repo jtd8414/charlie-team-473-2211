@@ -1,6 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Charlie.Monitor", "Charlie.Monitor\Charlie.Monitor.csproj", "{A048E596-C496-4FDA-B31B-97545E0B8AC2}"
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31321.278
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Charlie.Monitor", "Charlie.Monitor\Charlie.Monitor.csproj", "{A048E596-C496-4FDA-B31B-97545E0B8AC2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Charlie.Monitor.Library", "Charlie.Monitor.Library\Charlie.Monitor.Library.csproj", "{EAFDB291-0E4F-4017-8251-8643304B0D65}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -12,5 +17,15 @@ Global
 		{A048E596-C496-4FDA-B31B-97545E0B8AC2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A048E596-C496-4FDA-B31B-97545E0B8AC2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A048E596-C496-4FDA-B31B-97545E0B8AC2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EAFDB291-0E4F-4017-8251-8643304B0D65}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EAFDB291-0E4F-4017-8251-8643304B0D65}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EAFDB291-0E4F-4017-8251-8643304B0D65}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EAFDB291-0E4F-4017-8251-8643304B0D65}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B03A1117-6F5E-4A6B-8DA0-9A51581B3273}
 	EndGlobalSection
 EndGlobal
