@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Management;
+using Serilog;
 
 namespace Charlie.Monitor.Library.Utilities
 {
@@ -17,10 +18,12 @@ namespace Charlie.Monitor.Library.Utilities
     public class UserMonitorUtility : IUserMonitorUtility
     {
         private readonly IUserMonitorService _userMonitorService;
-
-        public UserMonitorUtility(IUserMonitorService userMonitorService)
+        private readonly ILogger _logger;
+        
+        public UserMonitorUtility(IUserMonitorService userMonitorService, ILogger logger)
         {
             _userMonitorService = userMonitorService;
+            _logger = logger;
         }
 
         public async Task MonitorUsersAysnc(CancellationToken stoppingToken)
@@ -29,7 +32,7 @@ namespace Charlie.Monitor.Library.Utilities
             ManagementObjectSearcher searcher = new(query);
             foreach (ManagementObject envVar in searcher.Get())
             {
-                Console.WriteLine("Username : {0}", envVar["Name"]);
+                _logger.Debug($"Found user {envVar["Name"]}");
             }
         }
     }
