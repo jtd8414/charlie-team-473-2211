@@ -30,11 +30,7 @@ netsh advfirewall firewall add rule name="RPC" dir=in action=allow protocol=TCP 
 netsh advfirewall firewall add rule name="netbios" dir=in action=allow protocol=TCP localport=139
 netsh advfirewall firewall add rule name="LDAP" dir=in action=allow protocol=TCP localport=389
 netsh advfirewall firewall add rule name="SMB" dir=in localport=445 protocol=TCP action=allow
-netsh advfirewall firewall add rule name="kerberos out" dir=out action=allow protocol=TCP remoteport=88
-netsh advfirewall firewall add rule name="RPC out" dir=out action=allow protocol=TCP remoteport=135
-netsh advfirewall firewall add rule name="netbios out" dir=out action=allow protocol=TCP remoteport=139
-netsh advfirewall firewall add rule name="LDAP out" dir=out action=allow protocol=TCP remoteport=389
-netsh advfirewall firewall add rule name="SMB out" dir=out remoteport=445 protocol=TCP action=allow
+
 
 #dhcp out
 netsh advfirewall firewall add rule name="dhcp out" dir=out action=allow protocol=UDP localport=68 remoteport=67 
