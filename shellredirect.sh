@@ -13,7 +13,7 @@ echo Users able to log in:
 cat /etc/passwd | grep -v /usr/sbin/nologin | grep -v /bin/false
 if [$username != ""]; then
 	echo $username
-	start=$(cat /etc/passwd | grep $username:)
-	echo $start
 	# TODO actually edit the /etc/passwd file and replace line with one ending in /bin/false
+	usermod -L $username
+	usermod -s /bin/false $username
 fi
