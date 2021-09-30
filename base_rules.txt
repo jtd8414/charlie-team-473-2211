@@ -1,0 +1,92 @@
+loopback = "{ lo0 }"
+WAN = "{ em0 }"
+LAN = "{ em1 }"
+
+
+# Gateways
+GWWAN_DHCP = " route-to ( em0 10.192.168.2 ) "
+ 
+set loginterface em1
+
+set skip on pfsync0
+set skip on loopback
+
+scrub on $WAN all    fragment reassemble
+scrub on $LAN all    fragment reassemble
+
+no nat proto carp
+no rdr proto carp
+
+# Outbound NAT rules are disabled
+
+# block IPv4 link-local. Per RFC 3927, link local "MUST NOT" be forwarded by a routing device,
+# and clients "MUST NOT" send such packets to a router. FreeBSD won't route 169.254./16, but
+# route-to can override that, causing problems such as in redmine #2073
+block in log quick from 169.254.0.0/16 to any tracker 1000000101 label "Block IPv4 link-local"
+block in log quick from any to 169.254.0.0/16 tracker 1000000102 label "Block IPv4 link-local"
+#---------------------------------------------------------------------------
+# default deny rules
+#---------------------------------------------------------------------------
+block in log inet all tracker 1000000103 label "Default deny rule IPv4"
+block out log inet all tracker 1000000104 label "Default deny rule IPv4"
+
+# Get rid of all ipv6
+block quick inet6
+
+# We use the mighty pf, we cannot be fooled. (block port 0)
+block log quick inet proto { tcp, udp } from any port = 0 to any tracker 1000000114 label "Block traffic from port 0"
+block log quick inet proto { tcp, udp } from any to any port = 0 tracker 1000000115 label "Block traffic to port 0"
+
+# Expands into spoofing rules
+antispoof quick log for $WAN
+antispoof quick log for $LAN
+
+pass in quick inet proto icmp from any to any icmp-type { echorep,echoreq } keep state label "USER_RULE: Enable Inbound ICMP"
+
+# User-defined rules follow
+anchor "serv_addc" {
+    pass proto { tcp, udp } from any to 10.10.1.10 port 53 label "Allow DNS to DC"
+    pass proto { tcp, udp } from 10.10.1.10 to any port 53 label "Allow outbound DNS for resolution"
+    pass proto { tcp, udp } from any to 10.10.1.10 port 389 label "Allow LDAP to DC"
+    pass proto { tcp, udp } from any to 10.10.1.10 port 636 label "Allow LDAPS to DC"
+}
+
+anchor "serv_iis" {
+    pass proto tcp from any to 10.10.1.20 port { 80, 443 } label "Allow Web Traffic"
+}
+
+anchor "serv_activeftp" {
+    pass proto tcp from any to 10.10.1.40 port 21 label "Active FTP port 21"
+    pass proto tcp from any port 20 to 10.10.1.40 label "Active FTP port 20"
+}
+
+anchor "serv_passiveftp" {
+    pass proto tcp from any to 10.10.1.40 port 21 label "Passive FTP port 21"
+    pass proto tcp from any to 10.10.1.40 port 1024:65535 label "Passive FTP Server portrange"
+}
+
+anchor "serv_cloudwin" {
+    pass proto { tcp, udp } from any to 10.10.1.230 port 139 label "SMB"
+    pass proto { tcp, udp } from any to 10.10.1.230 port 445 label "SMB"
+    pass proto { tcp, udp } from any to 10.10.1.230 port 3389 label "RDP"
+}
+
+anchor "serv_cloudlin" {
+    pass proto tcp from any to 10.10.1.240 port { 80, 443 } label "inbound web"
+    pass proto tcp from any to 10.10.1.240 port 22 label "inbound ssh"
+}
+
+anchor "jump_windows" {
+    pass from 10.10.1.202 to any label "allow all for windows jumpbox"
+}
+
+anchor "jump_linux" {
+    pass from 10.10.1.200 to any label "allow all for linux jumpbox"
+}
+
+anchor over_addc
+anchor over_iis
+anchor over_ftp
+anchor over_icmpbox
+anchor over_cloudwin
+anchor over_cloudlin
