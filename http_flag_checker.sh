@@ -1,7 +1,7 @@
 #!/bin/bash
 if [[ $# -lt 2 ]] ; then
     echo 'insufficient arguments'
-    echo 'usage: http_flag_maintainer.sh url flag'
+    echo 'usage: http_flag_checker.sh url flag'
     exit 1
 fi
 
