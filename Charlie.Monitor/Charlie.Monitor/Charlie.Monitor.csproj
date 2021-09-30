@@ -3,6 +3,7 @@
     <PropertyGroup>
         <TargetFramework>net5.0</TargetFramework>
         <UserSecretsId>dotnet-Charlie.Monitor-5EB2134B-BC44-4E44-84DA-275D94DEDA4C</UserSecretsId>
+        <LangVersion>latest</LangVersion>
     </PropertyGroup>
 
     <ItemGroup>

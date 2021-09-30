@@ -1,11 +1,15 @@
 ﻿using Charlie.Monitor.Library.Services;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Management;
+using System.Runtime.InteropServices;
+using System.Text.Json;
+using Cassia;
 using Serilog;
 
 namespace Charlie.Monitor.Library.Utilities
@@ -19,7 +23,7 @@ namespace Charlie.Monitor.Library.Utilities
     {
         private readonly IUserMonitorService _userMonitorService;
         private readonly ILogger _logger;
-        
+
         public UserMonitorUtility(IUserMonitorService userMonitorService, ILogger logger)
         {
             _userMonitorService = userMonitorService;
@@ -28,12 +32,23 @@ namespace Charlie.Monitor.Library.Utilities
 
         public async Task MonitorUsersAysnc(CancellationToken stoppingToken)
         {
+            var tsm = new TerminalServicesManager();
+            foreach (ITerminalServicesSession sess in tsm.GetSessions())
+            {
+                _logger.Debug($"{JsonSerializer.Serialize(sess)}");
+            }
+
+            var server = tsm.GetLocalServer();
+
+            // look at global
             SelectQuery query = new("Win32_UserAccount");
             ManagementObjectSearcher searcher = new(query);
-            foreach (ManagementObject envVar in searcher.Get())
+            foreach (ManagementBaseObject envVar in searcher.Get())
             {
-                _logger.Debug($"Found user {envVar["Name"]}");
+                _logger.Debug($"Found user {envVar["Name"]}, {envVar["Caption"]}");
             }
+            
+            Process[] processes = Process.GetProcesses();
         }
     }
 }
